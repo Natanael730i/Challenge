@@ -1,6 +1,7 @@
 package com.example.challengedevonion.controller;
 
 import com.example.challengedevonion.model.Pessoa;
+import com.example.challengedevonion.repository.BoletoRepository;
 import com.example.challengedevonion.repository.PessoaRepository;
 import com.example.challengedevonion.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class PessoaController {
 
     @Autowired PessoaRepository repository;
+    @Autowired BoletoRepository boletoRepository;
 
     //funcionando normalmente
     @PostMapping("/create")
@@ -49,14 +51,18 @@ public class PessoaController {
 
     //funcionando normalmente
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity delete(@PathVariable String id){
-        var pessoa = this.repository.findById(UUID.fromString(id)).orElse(null);
+    public ResponseEntity delete(@PathVariable UUID id){
+        var pessoa = this.repository.findById(id).orElse(null);
         if (pessoa == null){
             return ResponseEntity
                     .badRequest()
                     .body("Pessoa inexistente, verifique e tente novamente!");
         }
-        this.repository.deleteById(UUID.fromString(id));
+        var boletos = boletoRepository.findBoletoByPessoa(id);
+        if(!boletos.isEmpty()){
+            return ResponseEntity.badRequest().body("Pessoa tem boletos vinculados, impossível deletar");
+        }
+        this.repository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("Usuário deletado com sucesso!");
     }
 }
