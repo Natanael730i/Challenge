@@ -9,17 +9,16 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @Entity
 public class Boleto {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
     @Nullable
     private Date dataVencimento;
     private BigDecimal valor;
-    private UUID pessoa;
+    private Integer pessoa;
     private Status status;
 }

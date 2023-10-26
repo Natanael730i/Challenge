@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pessoa")
@@ -22,10 +21,10 @@ public class PessoaController {
     //funcionando normalmente
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody Pessoa pessoa){
-        repository.save(pessoa);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("Pessoa criada com secesso");
+        if (pessoa.getValorLimiteBoletos()== null){
+            return ResponseEntity.badRequest().body("Pessoa sem limite, não é possível savar");
+        }
+        return ResponseEntity.ok(repository.save(pessoa));
     }
 
     //funcionando normalmente
@@ -36,7 +35,7 @@ public class PessoaController {
 
     //Funcionando normalmente
     @PutMapping("/alter/{id}")
-    public ResponseEntity alter(@RequestBody Pessoa pessoa, @PathVariable UUID id){
+    public ResponseEntity alter(@RequestBody Pessoa pessoa, @PathVariable Integer id){
         var pessoaTeste = this.repository.findById(id).orElse(null);
         if (pessoaTeste == null){
             return ResponseEntity
@@ -51,7 +50,7 @@ public class PessoaController {
 
     //funcionando normalmente
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity delete(@PathVariable UUID id){
+    public ResponseEntity delete(@PathVariable Integer id){
         var pessoa = this.repository.findById(id).orElse(null);
         if (pessoa == null){
             return ResponseEntity

@@ -21,9 +21,10 @@ public class BoletoController {
     @Autowired PessoaRepository pessoaRepository;
 
     @GetMapping("/list/pessoa/{id}")
-    public List<Boleto> listBoletoPessoa(@PathVariable UUID id){
+    public List<Boleto> listBoletoPessoa(@PathVariable Integer id){
         var pessoas = pessoaRepository.findById(id);
-        return this.repository.findBoletosByPessoaAndStatus(pessoas.get().getId(), Status.PENDENTE);
+        return this.repository
+                .findBoletosByPessoaAndStatus(pessoas.get().getId(), Status.PENDENTE);
     }
 
     @GetMapping("/list")
@@ -81,7 +82,7 @@ public class BoletoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity alter(@RequestBody Boleto boleto, @PathVariable UUID id){
+    public ResponseEntity alter(@RequestBody Boleto boleto, @PathVariable Integer id){
         var boletoTeste = this.repository.findById(id).orElse(null);
         if (boletoTeste == null){
             return ResponseEntity
@@ -93,34 +94,34 @@ public class BoletoController {
     }
 
     @GetMapping("/list/{id}")
-    public Optional<Boleto> listCharacteristicOneBill(@PathVariable UUID id){
+    public Optional<Boleto> listCharacteristicOneBill(@PathVariable Integer id){
         return repository.findById(id);
     }
 
     @GetMapping("/list/settled/{id}")
-    public List<Boleto> listCharacteristicSettledBills(@PathVariable UUID id){
+    public List<Boleto> listCharacteristicSettledBills(@PathVariable Integer id){
         if (isPresent(id)) return repository.findBoletosByPessoaAndStatus(id, Status.LIQUIDADO);
         return null;
     }
     @GetMapping("/list/canceled/{id}")
-    public List<Boleto> listCharacteristicCanceledBills(@PathVariable UUID id){
+    public List<Boleto> listCharacteristicCanceledBills(@PathVariable Integer id){
         if(isPresent(id)) return repository.findBoletosByPessoaAndStatus(id, Status.CANCELADO);
         return null;
     }
 
-    public boolean isPresent(UUID id){
+    public boolean isPresent(Integer id){
        var test = pessoaRepository.findById(id).orElse(null);
         return test != null;
     }
 
     @GetMapping("/list/pending/{id}")
-    public List<Boleto> listCharacteristicPendingBills(@PathVariable UUID id){
+    public List<Boleto> listCharacteristicPendingBills(@PathVariable Integer id){
         if (isPresent(id))return repository.findBoletosByPessoaAndStatus(id, Status.PENDENTE);
         return null;
     }
 
     @PutMapping("/payment/{id}")
-    public ResponseEntity payment(@PathVariable UUID id){
+    public ResponseEntity payment(@PathVariable Integer id){
         var boleto = this.repository.findById(id).orElse(null);
 
         if (boleto == null){
@@ -134,7 +135,7 @@ public class BoletoController {
         return ResponseEntity.ok().body("Boleto Pago com sucesso!");
     }
     @PutMapping("/cancel/{id}")
-    public ResponseEntity cancel(@PathVariable UUID id){
+    public ResponseEntity cancel(@PathVariable Integer id){
         var boleto = this.repository.findById(id).orElse(null);
         if (boleto == null){
             return ResponseEntity
