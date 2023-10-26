@@ -41,7 +41,7 @@ public class BoletoController {
 
     @PostMapping("/create")
     public ResponseEntity criar(@RequestBody Boleto boleto){
-
+        System.out.println(boleto);
 //        Estou Setando a Data de vencimento para um Mês
         boleto.setDataVencimento(new Date());
         var vencimento = toCalendar(boleto.getDataVencimento());

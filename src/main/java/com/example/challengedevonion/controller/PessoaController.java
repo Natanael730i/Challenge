@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pessoa")
@@ -31,6 +32,10 @@ public class PessoaController {
     @GetMapping("/list")
     public List<Pessoa> list(){
         return repository.findAll();
+    }
+    @GetMapping("/{id}")
+    public Pessoa findOne(@PathVariable Integer id){
+        return repository.findPessoaById(id);
     }
 
     //Funcionando normalmente
