@@ -14,8 +14,15 @@ import java.util.List;
 @RequestMapping("/pessoa")
 public class PessoaController {
 
-    PessoaRepository repository;
-    BoletoRepository boletoRepository;
+
+    private final PessoaRepository repository;
+
+    private final BoletoRepository boletoRepository;
+
+    public PessoaController(PessoaRepository repository, BoletoRepository boletoRepository) {
+        this.repository = repository;
+        this.boletoRepository = boletoRepository;
+    }
 
     //funcionando normalmente
     @PostMapping("/create")

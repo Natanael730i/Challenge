@@ -18,8 +18,15 @@ import java.util.Optional;
 @RequestMapping("/boleto")
 public class BoletoController {
 
-    BoletoRepository repository;
-    PessoaRepository pessoaRepository;
+    private final BoletoRepository repository;
+
+    private final PessoaRepository pessoaRepository;
+
+    public BoletoController(BoletoRepository repository, PessoaRepository pessoaRepository) {
+        this.repository = repository;
+        this.pessoaRepository = pessoaRepository;
+    }
+
 
     @GetMapping("/list/pessoa/{id}")
     public List<Boleto> listBoletoPessoa(@PathVariable Integer id){
