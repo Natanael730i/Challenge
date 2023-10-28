@@ -5,26 +5,26 @@ import com.example.challengedevonion.model.Status;
 import com.example.challengedevonion.repository.BoletoRepository;
 import com.example.challengedevonion.repository.PessoaRepository;
 import com.example.challengedevonion.utils.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/boleto")
 public class BoletoController {
 
-    @Autowired BoletoRepository repository;
-    @Autowired PessoaRepository pessoaRepository;
+    BoletoRepository repository;
+    PessoaRepository pessoaRepository;
 
     @GetMapping("/list/pessoa/{id}")
     public List<Boleto> listBoletoPessoa(@PathVariable Integer id){
-        var pessoas = pessoaRepository.findById(id);
         return this.repository
-                .findBoletosByPessoaAndStatus(pessoas.get().getId(), Status.PENDENTE);
+                .findBoletosByPessoaAndStatus(id, Status.PENDENTE);
     }
 
     @GetMapping("/list")
@@ -40,21 +40,28 @@ public class BoletoController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity criar(@RequestBody Boleto boleto){
-        System.out.println(boleto);
-//        Estou Setando a Data de vencimento para um Mês
-        boleto.setDataVencimento(new Date());
+    public ResponseEntity<String> criar(@RequestBody Boleto boleto){
+        Date dataAtual = new Date();
         var vencimento = toCalendar(boleto.getDataVencimento());
-        vencimento.add(Calendar.MONTH, 1);
-        boleto.setDataVencimento(vencimento.getTime());
-
+//        Estou Setando a Data de vencimento para um Mês se vier nulo
+        if(boleto.getDataVencimento() == null){
+            boleto.setDataVencimento(new Date());
+            vencimento = toCalendar(boleto.getDataVencimento());
+            vencimento.add(Calendar.MONTH, 1);
+            boleto.setDataVencimento(vencimento.getTime());
+        }
+        if(vencimento.before(dataAtual) || vencimento.equals(toCalendar(dataAtual))){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body("Não é possível ter esta data " + boleto.getDataVencimento() + "Precisa ser maior que a data atual");
+        }
 //        Estou verificado se a pessoa existe
         var pessoa = pessoaRepository.findById(boleto.getPessoa()).orElse(null);
-        BigDecimal saldoDevedorTotalDoCliente = new BigDecimal("0");
+        double saldoDevedorTotalDoCliente = 0d;
         if (pessoa == null){
             return ResponseEntity
                     .badRequest()
-                    .body("Pessoa Inexistente para este boleto, verifique e tente novamente!");
+                    .body("Pesoa inexistente\n" + boleto);
         }
 
 //        Estou Buscando os boletos pendentes da pessoa e verificando se o valor de limite foi ultrapassado
@@ -63,9 +70,9 @@ public class BoletoController {
 
 //        Estou somando os valores pra ver como está o limite
         for (Boleto bol: boletosPendentesDaPessoa){
-            saldoDevedorTotalDoCliente = bol.getValor().add(saldoDevedorTotalDoCliente);
+            saldoDevedorTotalDoCliente += bol.getValor().doubleValue();
         }
-        if (saldoDevedorTotalDoCliente.compareTo(pessoa.getValorLimiteBoletos()) >= 0){
+        if (saldoDevedorTotalDoCliente >= pessoa.getValorLimiteBoletos().add(boleto.getValor()).doubleValue()){
             return ResponseEntity
                     .badRequest()
                     .body("Não é possível gerar este boleto, limite do cliente alcançado!");
@@ -82,7 +89,7 @@ public class BoletoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity alter(@RequestBody Boleto boleto, @PathVariable Integer id){
+    public ResponseEntity<String> alter(@RequestBody Boleto boleto, @PathVariable Integer id){
         var boletoTeste = this.repository.findById(id).orElse(null);
         if (boletoTeste == null){
             return ResponseEntity
@@ -90,7 +97,8 @@ public class BoletoController {
                     .body("Boleto inexistente, verifique e tente novamente!");
         }
         Utils.copyNonNullProperties(boletoTeste, boleto);
-        return ResponseEntity.ok().body(this.repository.save(boletoTeste));
+        var savedBoleto = this.repository.save(boletoTeste);
+        return ResponseEntity.ok().body(savedBoleto.toString());
     }
 
     @GetMapping("/list/{id}")
@@ -121,7 +129,7 @@ public class BoletoController {
     }
 
     @PutMapping("/payment/{id}")
-    public ResponseEntity payment(@PathVariable Integer id){
+    public ResponseEntity<String> payment(@PathVariable Integer id){
         var boleto = this.repository.findById(id).orElse(null);
 
         if (boleto == null){
@@ -135,7 +143,7 @@ public class BoletoController {
         return ResponseEntity.ok().body("Boleto Pago com sucesso!");
     }
     @PutMapping("/cancel/{id}")
-    public ResponseEntity cancel(@PathVariable Integer id){
+    public ResponseEntity<String> cancel(@PathVariable Integer id){
         var boleto = this.repository.findById(id).orElse(null);
         if (boleto == null){
             return ResponseEntity

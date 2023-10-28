@@ -5,11 +5,10 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.PropertyDescriptor;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Utils {
+public abstract class Utils {
 
     public static void copyNonNullProperties(Object source, Object target){
         BeanUtils.copyProperties(source, target, getNullProperties(source));
