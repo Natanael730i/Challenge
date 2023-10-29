@@ -1,4 +1,4 @@
-package com.example.challengedevonion.model;
+package com.example.challengedevonion.model.enums;
 
 public enum Status {
 
