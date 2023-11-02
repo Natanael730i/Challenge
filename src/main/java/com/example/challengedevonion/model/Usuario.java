@@ -16,5 +16,7 @@ public class Usuario {
     private Integer id;
     @Column(unique = true)
     private String usuario;
+    private Integer pessoa;
     private String senha;
+    private boolean isLogged;
 }

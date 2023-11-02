@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Configuration
-@EnableWebMvc
 public class SimpleCORSFilter implements WebMvcConfigurer {
 
     private final ObjectMapper objectMapper;

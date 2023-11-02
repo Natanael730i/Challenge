@@ -2,6 +2,7 @@ package com.example.challengedevonion.controller;
 
 import com.example.challengedevonion.model.Pessoa;
 import com.example.challengedevonion.service.PessoaService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class PessoaController {
         return service.criar(pessoa);
     }
 
-    //funcionando normalmente
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/list")
     public ResponseEntity<List<Pessoa>> list(){
         return service.listarTodos();

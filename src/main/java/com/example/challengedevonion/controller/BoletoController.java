@@ -2,6 +2,7 @@ package com.example.challengedevonion.controller;
 
 import com.example.challengedevonion.model.Boleto;
 import com.example.challengedevonion.service.BoletoService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,7 +62,7 @@ public class BoletoController {
         return service.pagar(id);
     }
     @PutMapping("/cancel/{id}")
-    public ResponseEntity<Boleto> cancel(@PathVariable Integer id){
+    public ResponseEntity<Boleto> cancel(@PathVariable Integer id) throws ChangeSetPersister.NotFoundException {
         return service.cancelar(id);
     }
 }

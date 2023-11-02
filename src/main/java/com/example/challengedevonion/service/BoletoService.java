@@ -7,6 +7,8 @@ import com.example.challengedevonion.model.enums.Vencimentos;
 import com.example.challengedevonion.repository.BoletoRepository;
 import com.example.challengedevonion.repository.PessoaRepository;
 import com.example.challengedevonion.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @Service
 public class BoletoService {
 
+    @Autowired
     private final BoletoRepository boletoRepository;
     private final PessoaRepository pessoaRepository;
 
@@ -24,6 +27,7 @@ public class BoletoService {
         this.boletoRepository = boletoRepository;
         this.pessoaRepository = pessoaRepository;
     }
+
 
     private Pessoa findPessoa(Boleto boleto){
         var pessoa = pessoaRepository
@@ -93,8 +97,8 @@ public class BoletoService {
         return ResponseEntity.ok().body(boletoRepository.save(boleto));
     }
 
-    private boolean isPresentBoolean(Integer id){
-        var retornarObjeto = boletoRepository.findById(id).orElse(null);
+    private boolean isPresentBoolean(Integer id) throws ChangeSetPersister.NotFoundException {
+        var retornarObjeto = boletoRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
         return retornarObjeto != null;
     }
 
@@ -123,7 +127,7 @@ public class BoletoService {
         return boletoRepository.findById(id).orElse(null);
     }
 
-    public ResponseEntity<Boleto> cancelar(Integer id){
+    public ResponseEntity<Boleto> cancelar(Integer id) throws ChangeSetPersister.NotFoundException {
         var boleto = encontraBoletoId(id);
         if (!isPresentBoolean(id)){
             return ResponseEntity.notFound().build();
