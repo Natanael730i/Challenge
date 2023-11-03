@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public interface BoletoRepository extends JpaRepository<Boleto, Integer> {
 
     List<Boleto> findBoletoByPessoa(Integer id);
