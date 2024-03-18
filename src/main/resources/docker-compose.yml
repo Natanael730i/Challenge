@@ -1,0 +1,13 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: onion
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
