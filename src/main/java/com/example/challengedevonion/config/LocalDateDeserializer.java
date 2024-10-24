@@ -10,13 +10,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-
 @Configuration
 public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
+
     @Override
-    public LocalDate deserialize(JsonParser jsonParser,
-                                 DeserializationContext deserializationContext)
-            throws IOException{
+    public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException{
 
         return toLocalDate(jsonParser.getValueAsString());
     }
@@ -30,4 +28,5 @@ public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
             return LocalDate.parse(value, formatter);
         }
     }
+
 }

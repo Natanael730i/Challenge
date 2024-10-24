@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/pessoa")
 public class PessoaController {
-
 
     private final PessoaService service;
 
@@ -19,7 +19,6 @@ public class PessoaController {
         this.service = service;
     }
 
-    //funcionando normalmente
     @PostMapping("/create")
     public ResponseEntity<Pessoa> create(@RequestBody Pessoa pessoa){
         return service.criar(pessoa);
@@ -30,21 +29,20 @@ public class PessoaController {
     public ResponseEntity<List<Pessoa>> list(){
         return service.listarTodos();
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Pessoa> findOne(@PathVariable Integer id){
+    public ResponseEntity<Pessoa> findOne(@PathVariable UUID id){
         return ResponseEntity.ok().body(service.listarPorId(id));
     }
 
-    //Funcionando normalmente
     @PutMapping("/alter/{id}")
-    public ResponseEntity<Pessoa> alter(@RequestBody Pessoa pessoa, @PathVariable Integer id){
+    public ResponseEntity<Pessoa> alter(@RequestBody Pessoa pessoa, @PathVariable UUID id){
          return this.service.alterar(pessoa, id);
     }
 
-
-    //funcionando normalmente
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Pessoa> delete(@PathVariable Integer id){
+    public ResponseEntity<Pessoa> delete(@PathVariable UUID id){
         return this.service.deletar(id);
     }
+
 }

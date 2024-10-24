@@ -49,5 +49,4 @@ public class SimpleCORSFilter implements WebMvcConfigurer {
         converters.add(new FormHttpMessageConverter());
     }
 
-
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/boleto")
@@ -18,9 +19,8 @@ public class BoletoController {
         this.service = service;
     }
 
-
     @GetMapping("/list/pessoa/{id}")
-    public ResponseEntity<List<Boleto>> listBoletoPessoa(@PathVariable Integer id){
+    public ResponseEntity<List<Boleto>> listBoletoPessoa(@PathVariable UUID id){
         return ResponseEntity.ok().body(service.getListaBoletosPendentesPessoa(id));
     }
 
@@ -35,34 +35,37 @@ public class BoletoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Boleto> alter(@RequestBody Boleto boleto, @PathVariable Integer id){
+    public ResponseEntity<Boleto> alter(@RequestBody Boleto boleto, @PathVariable UUID id){
         return service.alterar(boleto, id);
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<Boleto> listCharacteristicOneBill(@PathVariable Integer id){
+    public ResponseEntity<Boleto> listCharacteristicOneBill(@PathVariable UUID id){
         return service.retornaUmBoleto(id);
     }
 
     @GetMapping("/list/settled/{id}")
-    public ResponseEntity<List<Boleto>> listCharacteristicSettledBills(@PathVariable Integer id){
+    public ResponseEntity<List<Boleto>> listCharacteristicSettledBills(@PathVariable UUID id){
         return service.listaBoletosPagos(id);
     }
+
     @GetMapping("/list/canceled/{id}")
-    public ResponseEntity<List<Boleto>> listCharacteristicCanceledBills(@PathVariable Integer id){
+    public ResponseEntity<List<Boleto>> listCharacteristicCanceledBills(@PathVariable UUID id){
        return service.listaBoletosCancelados(id);
     }
+
     @GetMapping("/list/pending/{id}")
-    public ResponseEntity<List<Boleto>> listCharacteristicPendingBills(@PathVariable Integer id){
+    public ResponseEntity<List<Boleto>> listCharacteristicPendingBills(@PathVariable UUID id){
         return service.listaBoletosPendentes(id);
     }
 
     @PutMapping("/payment/{id}")
-    public ResponseEntity<Boleto> payment(@PathVariable Integer id){
+    public ResponseEntity<Boleto> payment(@PathVariable UUID id){
         return service.pagar(id);
     }
+
     @PutMapping("/cancel/{id}")
-    public ResponseEntity<Boleto> cancel(@PathVariable Integer id) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<Boleto> cancel(@PathVariable UUID id) throws ChangeSetPersister.NotFoundException {
         return service.cancelar(id);
     }
 }

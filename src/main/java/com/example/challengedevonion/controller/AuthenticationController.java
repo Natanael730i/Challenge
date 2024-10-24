@@ -28,8 +28,10 @@ public class AuthenticationController {
     public ResponseEntity<Usuario> registry(@RequestBody @Valid RegisterDTO data){
         return this.service.registrar(data);
     }
+
     @PutMapping("")
     public ResponseEntity<Usuario> login(@RequestBody Usuario usuario){
         return this.service.verificaLogin(usuario);
     }
+
 }

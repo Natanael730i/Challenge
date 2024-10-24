@@ -10,6 +10,4 @@ public class ChallengeDevOnionApplication {
         SpringApplication.run(ChallengeDevOnionApplication.class, args);
     }
 
-
-
 }

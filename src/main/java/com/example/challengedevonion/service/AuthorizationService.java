@@ -21,8 +21,10 @@ public class AuthorizationService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository repository;
+
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private TokenService tokenService;
 

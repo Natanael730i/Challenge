@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.challengedevonion.model.Usuario;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,12 +14,15 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret}")
-    private String secret;
+    private final KeyApi secret;
+
+    public TokenService(){
+        secret = new KeyApi();
+    }
 
     public String generateToken(Usuario usuario){
         try{
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(secret.getKey());
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(usuario.getLogin())
@@ -33,7 +35,7 @@ public class TokenService {
 
     public String validateToken(String token){
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(secret.getKey());
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()

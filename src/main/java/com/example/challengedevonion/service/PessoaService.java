@@ -4,12 +4,14 @@ import com.example.challengedevonion.model.Pessoa;
 import com.example.challengedevonion.repository.BoletoRepository;
 import com.example.challengedevonion.repository.PessoaRepository;
 import com.example.challengedevonion.utils.Utils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PessoaService {
@@ -38,7 +40,7 @@ public class PessoaService {
         return ResponseEntity.ok().body(pessoas);
     }
 
-    public Pessoa listarPorId(Integer id){
+    public Pessoa listarPorId(UUID id){
         var pessoa = this.repository.findById(id).orElse(null);
         if (pessoa == null){
             return new Pessoa();
@@ -46,17 +48,24 @@ public class PessoaService {
         return pessoa;
     }
 
-    public ResponseEntity<Pessoa> alterar(Pessoa pessoa, Integer id){
-        var verificarPessoa = listarPorId(id);
-        if (verificarPessoa.getId() == null){
-            return ResponseEntity.notFound().build();
-        }
-        Utils.copyNonNullProperties(pessoa, verificarPessoa);
-        this.repository.save(verificarPessoa);
-        return ResponseEntity.ok().body(verificarPessoa);
+
+
+    public ResponseEntity<Pessoa> alterar(Pessoa pessoa, UUID id){
+        var verificarPessoa = this.verifica(pessoa, id);
+        if(ObjectUtils.isEmpty(verificarPessoa)) return ResponseEntity.ok().body(verificarPessoa);
+        return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<Pessoa> deletar(Integer id){
+    public Pessoa verifica(Pessoa pessoa, UUID id){
+        var verificarPessoa = listarPorId(id);
+        if (verificarPessoa.getId() == null){
+            return null;
+        }
+        Utils.copyNonNullProperties(pessoa, verificarPessoa);
+        return pessoa;
+    }
+
+    public ResponseEntity<Pessoa> deletar(UUID id){
         var pessoa = listarPorId(id);
         if (pessoa == null){
             return ResponseEntity.notFound().build();

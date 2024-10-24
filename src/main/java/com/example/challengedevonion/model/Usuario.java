@@ -22,9 +22,12 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @Column(unique = true)
     private String login;
+
     private String password;
+
     private UserRole role;
 
     public Usuario(String login, String password, UserRole role) {

@@ -28,9 +28,10 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/pessoa").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/boleto").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.POST, "/pessoa/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/boleto/list").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/swagger-ui/index.html#").permitAll()
+                        .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
