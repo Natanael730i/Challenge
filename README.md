@@ -1,4 +1,4 @@
-![Banner do Projeto](./banner.png)
+![image](https://github.com/user-attachments/assets/621bf51b-0b28-40d9-9772-4cc4ce9e5f78)
 
 # 🧠 Challenge – Sistema de Desafios
 
